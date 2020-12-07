@@ -8,7 +8,7 @@ app.use(bodyParser.raw());
 
 class Storage {
 
-    version = '1.0.1';
+    version = '1.0.3';
     items = [];
 
     constructor() {
@@ -80,4 +80,4 @@ app
     })
 ;
 
-app.listen(8888, () => console.log('Server is running'));
+app.listen(8822, () => console.log('Server is running'));

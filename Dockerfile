@@ -15,5 +15,5 @@ COPY --chown=node:node . .
 
 USER node
 
-EXPOSE 8888
-CMD ["nodemon","app.js"]
+EXPOSE 8822
+CMD ["nodemon"]
