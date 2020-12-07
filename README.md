@@ -10,19 +10,22 @@ git clone https://github.com/pawella/process-watcher-node && cd process-watcher-
 ```shell
 docker build -t pawella/process-watcher-node .
 ```
-**Run App Image**
-```shell
-docker run -p 8888:8822 pawella/process-watcher-node .
-```
-**OR**
-```shell
-docker run -p 8888:8822 my/process-watcher-node -v /my/local-prject-path:/home/node/app
-```
+
 
 ## Install on DockerHub
+TODO
 
+## Run Container 
+**Run Default**
+```shell
+docker run -p 9999:8822 pawella/process-watcher-node .
+```
+**Run and share source**
+```shell
+docker run -p 8888:8822 pawella/process-watcher-node -v /my/local-prject-path:/home/node/app
+```
+**Run in Windows (use image ID)**
+```shell
+docker run -p 8888:8822 {YouProcessID} 
+```
 
-## Uruchomienie
-
-
-## Uruchomienie
