@@ -1,0 +1,13 @@
+.idea
+node_modules
+npm-debug.log
+Dockerfile*
+docker-compose*
+.dockerignore
+.git
+.svn
+.gitignore
+README.md
+LICENSE
+.vscode
+package-lock.json
