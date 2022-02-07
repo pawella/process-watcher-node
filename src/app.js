@@ -8,7 +8,7 @@ app.use(bodyParser.raw());
 
 class Storage {
 
-    version = '1.0.3';
+    version = '1.0.1';
     items = [];
 
     constructor() {
@@ -18,6 +18,7 @@ class Storage {
     addItemByInstance(instance, item) {
 
         if (item && item.id) {
+            this.remove(instance, item);
             let items = this.getItemsByInstance(instance, item);
             items.push(item);
             this.setItemsByInstance(instance, items);
@@ -43,7 +44,7 @@ class Storage {
 
         if (item && item.id) {
             items.forEach((v, i) => {
-                console.log(item.id,  v.id);
+                // console.log(item.id,  v.id);
                 if (v.id && item.id === v.id) {
                     items.splice(i, 1);
                 }
