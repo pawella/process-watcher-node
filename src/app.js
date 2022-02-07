@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const config = require('config');
 
 const app = new express();
 app.use(bodyParser.urlencoded({extended: true}));
@@ -55,6 +56,10 @@ class Storage {
 
 }
 
+let serverStopPath = config.get('app.stopPath');
+let serverPort = config.get('app.port');
+
+
 // const api = new apiHub();
 const api = new Storage();
 
@@ -78,6 +83,19 @@ app
         let items = api.getItemsByInstance(req.params.instance);
         return res.json(items);
     })
+    .get(serverStopPath, (req, res) => {
+        setTimeout(() => process.kill(process.pid, 'SIGTERM'), 200);
+        // process.send("STOP");
+        ;
+        return res.json(true);
+    })
 ;
 
-app.listen(8822, () => console.log('Server is running'));
+const server = app.listen(serverPort, () => {
+    console.log('Server is running')
+    console.info('Call GET http://localhost:'+ serverPort + serverStopPath + ' to stop this server');
+});
+
+process.on("SIGTERM", function(){
+    server.close(() => console.log('Process terminated'));
+})
