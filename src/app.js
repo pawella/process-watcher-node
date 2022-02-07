@@ -17,12 +17,12 @@ class Storage {
     addItemByInstance(instance, item) {
 
         if (item && item.id) {
-            this.remove(instance, item);
-            let items = this.getItemsByInstance(instance, item);
+            let items =  this.remove(instance, item);
             items.push(item);
             this.setItemsByInstance(instance, items);
         }
-        console.log(instance, item, this);
+        // console.log(instance, item, this);
+        return this;
     }
 
     setItemsByInstance(instance, items) {
