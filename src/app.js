@@ -8,10 +8,9 @@ app.use(bodyParser.raw());
 
 class Storage {
 
-    version = '1.0.1';
-    items = [];
-
     constructor() {
+        this.items = [];
+        this.version = '1.0.2'
         console.log('start', this.version);
     }
 
