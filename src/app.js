@@ -85,8 +85,6 @@ app
     })
     .get(serverStopPath, (req, res) => {
         setTimeout(() => process.kill(process.pid, 'SIGTERM'), 200);
-        // process.send("STOP");
-        ;
         return res.json(true);
     })
 ;
