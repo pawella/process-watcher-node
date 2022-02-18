@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const config = require('config');
 
+
 const app = new express();
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
@@ -18,11 +19,11 @@ class Storage {
     addItemByInstance(instance, item) {
 
         if (item && item.id) {
-            let items =  this.remove(instance, item);
+            this.remove(instance, item);
+            let items = this.getItemsByInstance(instance)
             items.push(item);
             this.setItemsByInstance(instance, items);
         }
-        // console.log(instance, item, this);
         return this;
     }
 
@@ -41,17 +42,21 @@ class Storage {
     remove(instance, item) {
 
         let items = this.getItemsByInstance(instance);
+        let isRemoved = false;
 
         if (item && item.id) {
             items.forEach((v, i) => {
-                // console.log(item.id,  v.id);
                 if (v.id && item.id === v.id) {
                     items.splice(i, 1);
+                    isRemoved = true;
                 }
             });
-            this.setItemsByInstance(instance, items);
+            if(isRemoved) {
+                this.setItemsByInstance(instance, items);
+            }
+
         }
-        return items;
+        return isRemoved;
     }
 
 }
@@ -60,7 +65,6 @@ let serverStopPath = config.get('app.stopPath');
 let serverPort = config.get('app.port');
 
 
-// const api = new apiHub();
 const api = new Storage();
 
 
@@ -73,19 +77,43 @@ app
     })
     .post('/api/:instance/item', (req, res) => {
         api.addItemByInstance(req.params.instance, req.body);
-        return res.json(true);
+        return res.json({
+            success: true
+        });
     })
     .delete('/api/:instance/item', (req, res) => {
-        api.remove(req.params.instance, req.body);
-        return res.json(true);
+        let result = api.remove(req.params.instance, req.body);
+        return res.json({
+            success: result
+        });
     })
     .get('/api/:instance/items', (req, res) => {
+
         let items = api.getItemsByInstance(req.params.instance);
+        let origin = '*';
+
+        if(req.headers.referer) {
+            let tmp = req.headers.referer.replace(/^(.*)\/$/i, '$1');
+            if(tmp) {
+                origin = tmp;
+            }
+        }
+
+        res.setHeader('Access-Control-Allow-Origin', origin);
+        res.setHeader('Access-Control-Allow-Methods', 'GET');
+        res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+        res.setHeader('Access-Control-Allow-Credentials', true);
+
         return res.json(items);
+
     })
     .get(serverStopPath, (req, res) => {
+
         setTimeout(() => process.kill(process.pid, 'SIGTERM'), 200);
-        return res.json(true);
+        return res.json({
+            success: true
+        });
+
     })
 ;
 
