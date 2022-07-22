@@ -1,0 +1,39 @@
+### Regiser information
+POST  http://localhost:8822/api/{{instance}}/item
+Content-Type: application/json
+
+{
+  "id": 999,
+  "value": "content",
+  "json": {
+    "time": {{$timestamp}},
+    "owner": "{{owner}}"
+  }
+}
+
+### Send POST request with json body
+POST  http://localhost:8822/api/{{instance}}/item
+Content-Type: application/json
+
+{
+  "id": 5556,
+  "value": "content",
+  "json": {
+    "time": {{$timestamp}},
+    "owner": "{{owner_seccond}}"
+  }
+}
+
+### Send POST request with json body
+DELETE  http://localhost:8822/api/{{instance}}/item
+Content-Type: application/json
+
+{
+  "id": 999
+}
+
+
+### Get information from owner
+GET  http://localhost:8822/owner/{{owner_seccond}}/items
+Content-Type: application/json
+

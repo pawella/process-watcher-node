@@ -12,7 +12,7 @@ class Storage {
 
     constructor() {
         this.items = [];
-        this.version = '1.0.2'
+        this.version = '1.1.0'
         console.log('start', this.version);
     }
 
@@ -21,6 +21,11 @@ class Storage {
         if (item && item.id) {
             this.remove(instance, item);
             let items = this.getItemsByInstance(instance)
+            if(item.owner === undefined && item.json) {
+                if(item.json.owner) {
+                    item.owner = item.json.owner;
+                }
+            }
             items.push(item);
             this.setItemsByInstance(instance, items);
         }
@@ -37,6 +42,14 @@ class Storage {
             return this.items[instance];
         }
         return [];
+    }
+
+    getInstances() {
+        if (this.items !== undefined) {
+            console.log(this.items);
+            return this.items;
+        }
+        return ['undefined'];
     }
 
     remove(instance, item) {
@@ -105,6 +118,65 @@ app
         res.setHeader('Access-Control-Allow-Credentials', true);
 
         return res.json(items);
+
+    })
+    .get('/owner/:owner/:instance/items', (req, res) => {
+
+        let items = api.getItemsByInstance(req.params.instance);
+        let origin = '*';
+
+        let ownerItems = [];
+
+        items.forEach((item) => {
+            if(item.owner !== undefined && item.owner === req.params.owner) {
+                ownerItems.push(item);
+            }
+        })
+
+        if(req.headers.referer) {
+            let tmp = req.headers.referer.replace(/^(.*)\/$/i, '$1');
+            if(tmp) {
+                origin = tmp;
+            }
+        }
+
+        res.setHeader('Access-Control-Allow-Origin', origin);
+        res.setHeader('Access-Control-Allow-Methods', 'GET');
+        res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+        res.setHeader('Access-Control-Allow-Credentials', true);
+
+        return res.json(ownerItems);
+
+    })
+    .get('/owner/:owner/items', (req, res) => {
+
+        let instances = api.getInstances();
+        let origin = '*';
+        let ownerItems = [];
+
+        console.log(typeof instances);
+        Object.entries(instances).forEach(([key, instance]) => {
+            console.log(`${key}: ${instance}`, instance)
+            Object.entries(instance).forEach(([a, data]) => {
+                if(data.owner !== undefined && data.owner === req.params.owner) {
+                    ownerItems.push(data);
+                }
+            });
+        });
+
+        if(req.headers.referer) {
+            let tmp = req.headers.referer.replace(/^(.*)\/$/i, '$1');
+            if(tmp) {
+                origin = tmp;
+            }
+        }
+
+        res.setHeader('Access-Control-Allow-Origin', origin);
+        res.setHeader('Access-Control-Allow-Methods', 'GET');
+        res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+        res.setHeader('Access-Control-Allow-Credentials', true);
+
+        return res.json(ownerItems);
 
     })
     .get(serverStopPath, (req, res) => {
